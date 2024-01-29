@@ -11,13 +11,14 @@ export class UsersService {
   constructor(@InjectModel(User.name) private userModel: Model<User>) { }
 
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
+  async create(createUserDto: CreateUserDto): Promise<string> {
     const user = new this.userModel(createUserDto);
-    return user.save();
+    user.save();
+    return 'User added successfully'
   }
 
-  findAll() {
-    return `This action returns all users`;
+  async findAll() {
+    return this.userModel.find() ;
   }
 
   findOne(id: number) {
