@@ -18,34 +18,42 @@ export class UsersService {
   }
 
   async findAll() {
-    return this.userModel.find() ;
+    return this.userModel.find();
   }
 
-  async findOne(id: string) : Promise <User| null > {
+  async findOne(id: string): Promise<User | null> {
     if (!Types.ObjectId.isValid(id)) {
       throw new NotFoundException('Invalid ObjectId');
     }
-    const user = await this.userModel.findOne({_id : id}).exec();
-     if (!user) {
+    const user = await this.userModel.findOne({ _id: id }).exec();
+    if (!user) {
       throw new NotFoundException('User not found');
-    } ;
-    return user ;
+    };
+    return user;
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
     if (!Types.ObjectId.isValid(id)) {
       throw new NotFoundException('Invalid ObjectId');
-  }
+    }
 
-  const userExist = await this.userModel.findOne({ _id: id }).exec();
+    const userExist = await this.userModel.findOne({ _id: id }).exec();
 
-  if (!userExist) {
+    if (!userExist) {
       throw new NotFoundException('User not found');
-  }
-    return this.userModel.updateOne({_id: id} , {$set: { ...updateUserDto }})
+    }
+    return this.userModel.updateOne({ _id: id }, { $set: { ...updateUserDto } })
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: string) {
+    if (!Types.ObjectId.isValid(id)) {
+      throw new NotFoundException('Invalid ObjectId');
+    }
+    const userExist = await this.userModel.findOne({ _id: id }).exec();
+    if (!userExist) {
+      throw new NotFoundException('User not found');
+    }
+    
+    return this.userModel.deleteOne({_id:id})
   }
 }
